@@ -408,171 +408,146 @@ body::before {
   </div>
   
   <script>
-    // Get target date (4 weeks from today, on Monday)
-    function getTargetDate() {
-      const today = new Date();
-      const targetDate = new Date(today);
-      
-      // Add 4 weeks (28 days)
-      targetDate.setDate(today.getDate() + 28);
-      
-      // Find the next Monday after that
-      const dayOfWeek = targetDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
-      const daysUntilMonday = dayOfWeek === 0 ? 1 : dayOfWeek === 1 ? 0 : 8 - dayOfWeek;
-      targetDate.setDate(targetDate.getDate() + daysUntilMonday);
-      
-      // Set to midnight
-      targetDate.setHours(0, 0, 0, 0);
-      
-      return targetDate;
+  // Lightning effect (keep this part as it is)
+  function setupLightning() {
+    const canvas = document.getElementById('lightningCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas dimensions
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
     
-    const countdownDate = getTargetDate();
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
     
-    // Update countdown every second
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const distance = countdownDate - now;
-      
-      // Calculate days, hours, minutes, seconds
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      
-      // Display countdown
-      document.getElementById('days').textContent = String(days).padStart(2, '0');
-      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-      
-      // If countdown finished
-      if (distance < 0) {
-        clearInterval(countdownInterval);
-        document.getElementById('days').textContent = '00';
-        document.getElementById('hours').textContent = '00';
-        document.getElementById('minutes').textContent = '00';
-        document.getElementById('seconds').textContent = '00';
-      }
-    }
+    // Lightning parameters
+    const lightningInterval = 5000; // Time between lightning strikes in ms
+    const branchProbability = 0.3; // Probability of a branch forming
     
-    // Update countdown immediately and then every second
-    updateCountdown();
-    const countdownInterval = setInterval(updateCountdown, 1000);
-    
-    // Lightning effect
-    function setupLightning() {
-      const canvas = document.getElementById('lightningCanvas');
-      const ctx = canvas.getContext('2d');
+    function drawLightning(x, y, angle, length, width, branches, color) {
+      if (branches <= 0) return;
       
-      // Set canvas dimensions
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
+      const endX = x + Math.cos(angle) * length;
+      const endY = y + Math.sin(angle) * length;
       
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.stroke();
       
-      // Lightning parameters
-      const lightningInterval = 5000; // Time between lightning strikes in ms
-      const branchProbability = 0.3; // Probability of a branch forming
-      
-      function drawLightning(x, y, angle, length, width, branches, color) {
-        if (branches <= 0) return;
-        
-        const endX = x + Math.cos(angle) * length;
-        const endY = y + Math.sin(angle) * length;
-        
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = color;
-        ctx.lineWidth = width;
-        ctx.stroke();
-        
-        // Create branches
-        for (let i = 0; i < 3; i++) {
-          if (Math.random() < branchProbability) {
-            const newAngle = angle + (Math.random() - 0.5) * 1.5;
-            const newLength = length * 0.7;
-            const newWidth = width * 0.7;
-            const branchX = x + (endX - x) * (0.3 + Math.random() * 0.4);
-            const branchY = y + (endY - y) * (0.3 + Math.random() * 0.4);
-            
-            drawLightning(
-              branchX,
-              branchY,
-              newAngle,
-              newLength,
-              newWidth,
-              branches - 1,
-              color
-            );
-          }
-        }
-        
-        // Continue main branch
-        if (branches > 1) {
-          const newAngle = angle + (Math.random() - 0.5) * 0.3;
+      // Create branches
+      for (let i = 0; i < 3; i++) {
+        if (Math.random() < branchProbability) {
+          const newAngle = angle + (Math.random() - 0.5) * 1.5;
+          const newLength = length * 0.7;
+          const newWidth = width * 0.7;
+          const branchX = x + (endX - x) * (0.3 + Math.random() * 0.4);
+          const branchY = y + (endY - y) * (0.3 + Math.random() * 0.4);
+          
           drawLightning(
-            endX,
-            endY,
+            branchX,
+            branchY,
             newAngle,
-            length * 0.8,
-            width * 0.8,
+            newLength,
+            newWidth,
             branches - 1,
             color
           );
         }
       }
       
-      function createLightning() {
+      // Continue main branch
+      if (branches > 1) {
+        const newAngle = angle + (Math.random() - 0.5) * 0.3;
+        drawLightning(
+          endX,
+          endY,
+          newAngle,
+          length * 0.8,
+          width * 0.8,
+          branches - 1,
+          color
+        );
+      }
+    }
+    
+    function createLightning() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const startX = Math.random() * canvas.width;
+      const startY = 0;
+      const angle = Math.PI / 2; // Downward
+      const length = 100;
+      const width = 3;
+      const branches = 10;
+      const color = '#4d6bff';
+      
+      drawLightning(startX, startY, angle, length, width, branches, color);
+      
+      // Fade out lightning
+      setTimeout(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        const startX = Math.random() * canvas.width;
-        const startY = 0;
-        const angle = Math.PI / 2; // Downward
-        const length = 100;
-        const width = 3;
-        const branches = 10;
-        const color = '#4d6bff';
-        
-        drawLightning(startX, startY, angle, length, width, branches, color);
-        
-        // Fade out lightning
-        setTimeout(() => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }, 200);
-      }
-      
-      // Create lightning at random intervals
-      function scheduleLightning() {
-        const delay = lightningInterval + Math.random() * 5000;
-        setTimeout(() => {
-          createLightning();
-          scheduleLightning();
-        }, delay);
-      }
-      
-      scheduleLightning();
+      }, 200);
     }
-    document.querySelector('.cta').addEventListener('click', function() {
-  const openInNewTab = confirm('Open registration in new tab?');
-  const url = 'https:facebook.com';
+    
+    // Create lightning at random intervals
+    function scheduleLightning() {
+      const delay = lightningInterval + Math.random() * 5000;
+      setTimeout(() => {
+        createLightning();
+        scheduleLightning();
+      }, delay);
+    }
+    
+    scheduleLightning();
+  }
   
-  openInNewTab ? window.open(url, '_blank') : window.location.href = url;
-});
-    // Initialize lightning after page load
-    window.addEventListener('load', setupLightning);
-    
-    // Function to update logo source (you can change this to your actual logo path)
-    function updateLogoPath(path) {
-      document.getElementById('zenith-logo').src = path;
-    }
-    
-    // Example usage (you would call this with your actual logo path)
-    // updateLogoPath('/path/to/your/logo.png');
-  </script>
+  // Initialize lightning after page load
+  window.addEventListener('load', setupLightning);
+
+  // Form submission
+  document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Get form data
+    const formData = new FormData(e.target);
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    // Send data to SheetDB
+    fetch('https://sheetdb.io/api/v1/YOUR_SHEETDB_ID', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        showSuccessMessage();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Registration failed. Please try again.');
+      });
+  });
+
+  function showSuccessMessage() {
+    document.getElementById('successMessage').style.display = 'flex';
+  }
+
+  function hideSuccessMessage() {
+    document.getElementById('successMessage').style.display = 'none';
+    // Optionally redirect to homepage
+    // window.location.href = 'index.html';
+  }
+</script>
 </body>
 </html>
