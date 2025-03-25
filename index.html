@@ -370,23 +370,11 @@
   </div>
   
   <script>
-    // Get target date (4 weeks from today, on Monday)
+    // Countdown to 14th April 2025 at 13:00
     function getTargetDate() {
-      const today = new Date();
-      const targetDate = new Date(today);
-      
-      // Add 4 weeks (28 days)
-      targetDate.setDate(today.getDate() + 28);
-      
-      // Find the next Monday after that
-      const dayOfWeek = targetDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
-      const daysUntilMonday = dayOfWeek === 0 ? 1 : dayOfWeek === 1 ? 0 : 8 - dayOfWeek;
-      targetDate.setDate(targetDate.getDate() + daysUntilMonday);
-      
-      // Set to midnight
-      targetDate.setHours(0, 0, 0, 0);
-      
-      return targetDate;
+      // Create a Date object for 14th April 2025 at 13:00
+      const countdownDate = new Date(2025, 3, 14, 13, 0, 0);
+      return countdownDate;
     }
     
     const countdownDate = getTargetDate();
@@ -422,7 +410,10 @@
     updateCountdown();
     const countdownInterval = setInterval(updateCountdown, 1000);
     
-    // Lightning effect
+    // Rest of the JavaScript remains the same as in the original file...
+    // (Lightning effect code is unchanged)
+    
+    // Lightning effect setup code...
     function setupLightning() {
       const canvas = document.getElementById('lightningCanvas');
       const ctx = canvas.getContext('2d');
