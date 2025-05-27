@@ -1,518 +1,249 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="icon" href="Bluek.PNG" type="image/png">
-  <title>CodeStorm by Zenith Club</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Orbitron', sans-serif;
-      background-color: #000;
-      color: #fff;
-      overflow-x: hidden;
-      background-image: url('back.jpg'); /* Replace with your image name */
-      background-size: cover; /* Ensures the image covers the entire background */
-      background-position: center; /* Centers the image */
-      background-repeat: no-repeat; /* Prevents the image from repeating */
-      position: relative; /* Required for the overlay */
-    }
-
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5); /* Dark overlay (adjust opacity as needed) */
-      z-index: -1; /* Ensures the overlay stays behind the content */
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 0;
-    }
-    
-    .logo {
-      height: 100px;
-      width: auto;
-    }
-    
-    .logo img {
-      height: 100%;
-      width: 100%;
-      object-fit: contain;
-    }
-    
-    nav ul {
-      display: flex;
-      list-style: none;
-      gap: 2rem;
-    }
-    
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-      text-transform: uppercase;
-      position: relative;
-      padding: 0.5rem 0;
-    }
-    
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background-color: #0ff;
-      transition: width 0.3s ease;
-    }
-    
-    nav a:hover::after {
-      width: 100%;
-    }
-    
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem 0;
-      position: relative;
-    }
-    
-    h1 {
-      font-size: 5rem;
-      font-weight: 900;
-      margin-bottom: 1rem;
-      background: linear-gradient(to right, #4d6bff, #0ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-transform: uppercase;
-      letter-spacing: 0.2rem;
-    }
-    
-    .subtitle {
-      font-size: 1.5rem;
-      color: #fff;
-      margin-bottom: 3rem;
-      max-width: 800px;
-    }
-    
-    .countdown {
-      display: flex;
-      gap: 2rem;
-      margin-bottom: 3rem;
-      transform: scale(1.5);
-      margin-top: 2rem;
-      margin-bottom: 4rem;
-    }
-    
-    .countdown-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 1.5rem;
-      min-width: 140px;
-      border: 2px solid rgba(77, 107, 255, 0.5);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    }
-    
-    .countdown-item::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #4d6bff, #0ff);
-    }
-    
-    .countdown-item::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 30%;
-      height: 1px;
-      background-color: #0ff;
-    }
-    
-    .countdown-value {
-      font-size: 3.5rem;
-      font-weight: 700;
-      color: #4d6bff;
-      text-shadow: 0 0 10px rgba(77, 107, 255, 0.5);
-    }
-    
-    .countdown-label {
-      font-size: 1.2rem;
-      color: #0ff;
-      text-transform: uppercase;
-      margin-top: 0.5rem;
-    }
-    
-    .cta {
-      padding: 1rem 2.5rem;
-      background-color: transparent;
-      color: #4d6bff;
-      border: 2px solid #4d6bff;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      font-size: 1.2rem;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      border-radius: 3px;
-      margin-top: 1rem;
-      text-decoration: none; /* Remove underline from the link */
-      display: inline-block; /* Ensure the link behaves like a button */
-    }
-    
-    .cta::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: rgba(77, 107, 255, 0.2);
-      transition: all 0.3s ease;
-    }
-    
-    .cta:hover::before {
-      left: 100%;
-    }
-    
-    .cta:hover {
-      box-shadow: 0 0 20px rgba(77, 107, 255, 0.7);
-    }
-    
-    .lightning {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: -1;
-    }
-    
-    footer {
-      text-align: center;
-      padding: 2rem 0;
-      font-size: 0.9rem;
-      color: #4d6bff;
-    }
-    
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-    
-    .social-links a {
-      color: #fff;
-      font-size: 1.5rem;
-      transition: color 0.3s ease;
-    }
-    
-    .social-links a:hover {
-      color: #0ff;
-    }
-    
-    .flicker {
-      animation: flicker 5s infinite alternate;
-    }
-    
-    @keyframes flicker {
-      0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
-        opacity: 1;
-      }
-      20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
-        opacity: 0.5;
-      }
-    }
-    
-    #lightningCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.7;
-    }
-    
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 3rem;
-      }
-      
-      .subtitle {
-        font-size: 1.2rem;
-      }
-      
-      .countdown {
-        flex-wrap: wrap;
-        justify-content: center;
-        transform: scale(1.2);
-      }
-      
-      .countdown-item {
-        min-width: 110px;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      header {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      h1 {
-        font-size: 2.5rem;
-      }
-      
-      .countdown {
-        transform: scale(1);
-      }
-      
-      .countdown-item {
-        min-width: 80px;
-        padding: 1rem;
-      }
-      
-      .countdown-value {
-        font-size: 2.5rem;
-      }
-    }
-  </style>
-</head>
-<body>
-  <canvas id="lightningCanvas"></canvas>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <!-- Replace the src with your actual logo path -->
-        <img src="White (1).PNG" alt="Zenith Club Logo" id="zenith-logo" height="200" width="auto">
-      </div>
-      <nav>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="regisration.html">Register</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </nav>
-    </header>
-    
-    <div class="hero">
-      <h1 class="flicker">CodeStorm</h1>
-      <p class="subtitle">Unleash the power of code in an electrifying event that will challenge your skills and spark your creativity.</p>
-      
-      <div class="countdown">
-        <div class="countdown-item">
-          <span id="days" class="countdown-value">--</span>
-          <span class="countdown-label">Days</span>
-        </div>
-        <div class="countdown-item">
-          <span id="hours" class="countdown-value">--</span>
-          <span class="countdown-label">Hours</span>
-        </div>
-        <div class="countdown-item">
-          <span id="minutes" class="countdown-value">--</span>
-          <span class="countdown-label">Minutes</span>
-        </div>
-        <div class="countdown-item">
-          <span id="seconds" class="countdown-value">--</span>
-          <span class="countdown-label">Seconds</span>
-        </div>
-      </div>
-      
-      <a class="cta" href="regisration.html">Register Now</a>
-    </div>
-    
-    <footer>
-      <p>&copy; 2025 Zenith Club. All Rights Reserved.</p>
-      
-    </footer>
-  </div>
-  
-  <script>
-    // Countdown to 14th April 2025 at 13:00
-    function getTargetDate() {
-      // Create a Date object for 14th April 2025 at 13:00
-      const countdownDate = new Date(2025, 3, 14, 13, 0, 0);
-      return countdownDate;
-    }
-    
-    const countdownDate = getTargetDate();
-    
-    // Update countdown every second
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const distance = countdownDate - now;
-      
-      // Calculate days, hours, minutes, seconds
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      
-      // Display countdown
-      document.getElementById('days').textContent = String(days).padStart(2, '0');
-      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-      
-      // If countdown finished
-      if (distance < 0) {
-        clearInterval(countdownInterval);
-        document.getElementById('days').textContent = '00';
-        document.getElementById('hours').textContent = '00';
-        document.getElementById('minutes').textContent = '00';
-        document.getElementById('seconds').textContent = '00';
-      }
-    }
-    
-    // Update countdown immediately and then every second
-    updateCountdown();
-    const countdownInterval = setInterval(updateCountdown, 1000);
-    
-    // Rest of the JavaScript remains the same as in the original file...
-    // (Lightning effect code is unchanged)
-    
-    // Lightning effect setup code...
-    function setupLightning() {
-      const canvas = document.getElementById('lightningCanvas');
-      const ctx = canvas.getContext('2d');
-      
-      // Set canvas dimensions
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-      
-      // Lightning parameters
-      const lightningInterval = 5000; // Time between lightning strikes in ms
-      const branchProbability = 0.3; // Probability of a branch forming
-      
-      function drawLightning(x, y, angle, length, width, branches, color) {
-        if (branches <= 0) return;
-        
-        const endX = x + Math.cos(angle) * length;
-        const endY = y + Math.sin(angle) * length;
-        
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = color;
-        ctx.lineWidth = width;
-        ctx.stroke();
-        
-        // Create branches
-        for (let i = 0; i < 3; i++) {
-          if (Math.random() < branchProbability) {
-            const newAngle = angle + (Math.random() - 0.5) * 1.5;
-            const newLength = length * 0.7;
-            const newWidth = width * 0.7;
-            const branchX = x + (endX - x) * (0.3 + Math.random() * 0.4);
-            const branchY = y + (endY - y) * (0.3 + Math.random() * 0.4);
+</div>
+            `;
             
-            drawLightning(
-              branchX,
-              branchY,
-              newAngle,
-              newLength,
-              newWidth,
-              branches - 1,
-              color
-            );
-          }
+            updateQuizProgress();
+            updateProgress();
         }
-        
-        // Continue main branch
-        if (branches > 1) {
-          const newAngle = angle + (Math.random() - 0.5) * 0.3;
-          drawLightning(
-            endX,
-            endY,
-            newAngle,
-            length * 0.8,
-            width * 0.8,
-            branches - 1,
-            color
-          );
+
+        function updateQuizProgress() {
+            const progress = (currentQuizQuestion / quizQuestions.length) * 100;
+            document.getElementById('quiz-progress').style.width = progress + '%';
         }
-      }
-      
-      function createLightning() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        const startX = Math.random() * canvas.width;
-        const startY = 0;
-        const angle = Math.PI / 2; // Downward
-        const length = 100;
-        const width = 3;
-        const branches = 10;
-        const color = '#4d6bff';
-        
-        drawLightning(startX, startY, angle, length, width, branches, color);
-        
-        // Fade out lightning
+
+        function updateCaliperReading() {
+            const value = document.getElementById('caliper-slider').value;
+            const reading = parseFloat(value).toFixed(2);
+            document.getElementById('caliper-reading').textContent = reading + ' mm';
+            document.getElementById('measurement-value').textContent = reading;
+        }
+
+        function updateMicrometerReading() {
+            const value = document.getElementById('micrometer-slider').value;
+            const reading = parseFloat(value).toFixed(2);
+            document.getElementById('micrometer-reading').textContent = reading + ' mm';
+        }
+
+        function showConceptDetails(concept) {
+            const detailsDiv = document.getElementById('concept-details');
+            const concepts = {
+                calibration: {
+                    title: "Calibration (Étalonnage)",
+                    content: "Calibration is the operation of measuring known quantities Gi with a measuring instrument to establish the relationship between measured values Mi and known values. This creates a calibration curve showing deviations from ideal behavior. The process involves comparing instrument readings against certified reference standards to determine measurement errors and establish correction factors."
+                },
+                precision: {
+                    title: "Precision (Précision)",
+                    content: "Precision refers to the difference between the measured value and the true value, typically expressed as a percentage. It can be calculated relative to the true value or full scale. High precision means measurements are close to the true value. Formula: Precision (%) = |Measured Value - True Value| / True Value × 100"
+                },
+                accuracy: {
+                    title: "Accuracy (Justesse)",
+                    content: "Accuracy characterizes a measuring instrument with low systematic errors. An accurate instrument produces measurements where the most probable value is very close to the true value. It's about how close measurements are to the actual or true value, regardless of precision."
+                },
+                repeatability: {
+                    title: "Repeatability (Répétabilité)",
+                    content: "Repeatability is the closeness of agreement between measurement results of the same quantity under identical conditions: same operator, same measuring instrument, same location, same measurement method, and measurements carried out over a short period of time."
+                },
+                reproducibility: {
+                    title: "Reproducibility (Reproductibilité)",
+                    content: "Reproducibility is the closeness of agreement between measurement results using identical instruments but with different operators, different times, and different locations. It tests the consistency of measurements across various conditions and personnel."
+                },
+                sensitivity: {
+                    title: "Sensitivity (Sensibilité)",
+                    content: "Sensitivity is the property of a measurement system to return to a predetermined equilibrium position after being subjected to small perturbations. It's often indicated as a function of time and determines how well the system can detect small changes in the measured quantity."
+                }
+            };
+
+            const conceptData = concepts[concept];
+            detailsDiv.innerHTML = `
+                <h3>${conceptData.title}</h3>
+                <p>${conceptData.content}</p>
+            `;
+            detailsDiv.style.display = 'block';
+
+            conceptsLearned = Math.min(conceptsLearned + 1, 6);
+            updateProgress();
+        }
+
+        function updateProgress() {
+            // Update flashcard progress
+            const flashcardPercent = Math.min((flashcardProgress / flashcards.length) * 100, 100);
+            if (document.getElementById('flashcard-progress')) {
+                document.getElementById('flashcard-progress').style.width = flashcardPercent + '%';
+            }
+
+            // Update concept progress
+            const conceptPercent = (conceptsLearned / 6) * 100;
+            if (document.getElementById('concept-progress')) {
+                document.getElementById('concept-progress').style.width = conceptPercent + '%';
+            }
+        }
+
+        function updateProgressDisplay() {
+            // Update all progress displays
+            const flashcardPercent = Math.min((flashcardProgress / flashcards.length) * 100, 100);
+            const quizPercent = quizQuestions.length > 0 ? (quizScore / quizQuestions.length) * 100 : 0;
+            const conceptPercent = (conceptsLearned / 6) * 100;
+
+            document.getElementById('flashcard-progress').style.width = flashcardPercent + '%';
+            document.getElementById('flashcard-count').textContent = `${Math.min(flashcardProgress, flashcards.length)} / ${flashcards.length} cards reviewed`;
+
+            document.getElementById('quiz-performance').style.width = quizPercent + '%';
+            document.getElementById('quiz-score').textContent = `${Math.round(quizPercent)}% average score`;
+
+            document.getElementById('concept-progress').style.width = conceptPercent + '%';
+            document.getElementById('concept-count').textContent = `${conceptsLearned} / 6 concepts learned`;
+        }
+
+        // Initialize progress tracking
+        let progressData = {
+            flashcardsViewed: new Set(),
+            quizAttempts: [],
+            conceptsExplored: new Set()
+        };
+
+        // Enhanced flip card function with progress tracking
+        function flipCard(index) {
+            const cards = document.querySelectorAll('.flashcard');
+            cards[index].classList.toggle('flipped');
+            
+            if (cards[index].classList.contains('flipped') && !progressData.flashcardsViewed.has(index)) {
+                progressData.flashcardsViewed.add(index);
+                flashcardProgress = progressData.flashcardsViewed.size;
+                updateProgress();
+            }
+        }
+
+        // Add some interactive features
+        function addInteractiveFeatures() {
+            // Add keyboard navigation for flashcards
+            document.addEventListener('keydown', function(e) {
+                if (document.getElementById('flashcards').classList.contains('active')) {
+                    const cards = document.querySelectorAll('.flashcard');
+                    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        // Cycle through cards with arrow keys
+                        const currentFlipped = document.querySelector('.flashcard.flipped');
+                        if (currentFlipped) {
+                            currentFlipped.classList.remove('flipped');
+                        }
+                        
+                        let nextIndex = 0;
+                        if (currentFlipped) {
+                            const currentIndex = Array.from(cards).indexOf(currentFlipped);
+                            nextIndex = e.key === 'ArrowRight' ? 
+                                (currentIndex + 1) % cards.length : 
+                                (currentIndex - 1 + cards.length) % cards.length;
+                        }
+                        
+                        cards[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    
+                    if (e.key === ' ' || e.key === 'Enter') {
+                        e.preventDefault();
+                        // Space or Enter to flip focused card
+                        const visibleCards = Array.from(cards).filter(card => {
+                            const rect = card.getBoundingClientRect();
+                            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+                        });
+                        
+                        if (visibleCards.length > 0) {
+                            const index = Array.from(cards).indexOf(visibleCards[0]);
+                            flipCard(index);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize the application
+        function initializeApp() {
+            addInteractiveFeatures();
+            updateProgressDisplay();
+            
+            // Add some welcome animations
+            setTimeout(() => {
+                document.querySelector('.header').style.animation = 'fadeIn 0.8s ease-out';
+                document.querySelectorAll('.nav-card').forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.animation = 'fadeIn 0.6s ease-out';
+                        card.style.animationDelay = `${index * 0.1}s`;
+                    }, 200);
+                });
+            }, 100);
+        }
+
+        // Call initialization when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        // Add some utility functions for enhanced experience
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress?')) {
+                flashcardProgress = 0;
+                quizScore = 0;
+                conceptsLearned = 0;
+                currentQuizQuestion = 0;
+                progressData = {
+                    flashcardsViewed: new Set(),
+                    quizAttempts: [],
+                    conceptsExplored: new Set()
+                };
+                updateProgressDisplay();
+                alert('Progress has been reset!');
+            }
+        }
+
+        function exportProgress() {
+            const progressReport = {
+                timestamp: new Date().toISOString(),
+                flashcardsCompleted: flashcardProgress,
+                quizScore: quizScore,
+                conceptsLearned: conceptsLearned,
+                totalFlashcards: flashcards.length,
+                totalQuizQuestions: quizQuestions.length,
+                totalConcepts: 6
+            };
+            
+            const dataStr = JSON.stringify(progressReport, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'measurement_systems_progress.json';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // Add progress management buttons to the progress section
+        function addProgressManagement() {
+            const progressSection = document.getElementById('progress');
+            const managementDiv = document.createElement('div');
+            managementDiv.style.textAlign = 'center';
+            managementDiv.style.marginTop = '30px';
+            managementDiv.innerHTML = `
+                <button onclick="resetProgress()" style="background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin: 0 10px;">🔄 Reset Progress</button>
+                <button onclick="exportProgress()" style="background: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin: 0 10px;">📊 Export Progress</button>
+            `;
+            progressSection.appendChild(managementDiv);
+        }
+
+        // Enhanced concept exploration
+        function enhanceConceptExploration() {
+            const originalShowConceptDetails = showConceptDetails;
+            showConceptDetails = function(concept) {
+                originalShowConceptDetails(concept);
+                progressData.conceptsExplored.add(concept);
+                conceptsLearned = progressData.conceptsExplored.size;
+                updateProgress();
+            };
+        }
+
+        // Call enhancements
         setTimeout(() => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }, 200);
-      }
-      
-      // Create lightning at random intervals
-      function scheduleLightning() {
-        const delay = lightningInterval + Math.random() * 5000;
-        setTimeout(() => {
-          createLightning();
-          scheduleLightning();
-        }, delay);
-      }
-      
-      scheduleLightning();
-    }
-    
-    // Initialize lightning after page load
-    window.addEventListener('load', setupLightning);
-  </script>
+            addProgressManagement();
+            enhanceConceptExploration();
+        }, 1000);
+
+    </script>
 </body>
 </html>
