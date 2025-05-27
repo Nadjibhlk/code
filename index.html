@@ -1,4 +1,756 @@
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measurement Systems - Interactive Course</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid transparent;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .nav-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .flashcard {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background: #e3f2fd;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .quiz-options {
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .quiz-option.correct {
+            border-color: #4caf50;
+            background: #e8f5e8;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .simulator {
+            background: #f0f4ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .measurement-tool {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .caliper-simulation {
+            width: 100%;
+            max-width: 500px;
+            height: 200px;
+            margin: 20px auto;
+            position: relative;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .slider {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .reading-display {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        .concept-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .concept-node {
+            background: #fff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .concept-node:hover {
+            background: #f0f4ff;
+            transform: scale(1.05);
+        }
+
+        .formula-display {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📐 Measurement Systems Course</h1>
+            <p>Interactive Learning Platform for Engineering Metrology</p>
+        </div>
+
+        <div id="main-menu">
+            <div class="nav-cards">
+                <div class="nav-card" onclick="showSection('flashcards')">
+                    <h3>🃏 Flashcards</h3>
+                    <p>Learn key concepts with interactive flashcards covering measurement principles, characteristics, and error analysis.</p>
+                </div>
+
+                <div class="nav-card" onclick="showSection('quiz')">
+                    <h3>🧠 Quiz Mode</h3>
+                    <p>Test your knowledge with multiple-choice questions on calibration, precision, accuracy, and measurement methods.</p>
+                </div>
+
+                <div class="nav-card" onclick="showSection('simulator')">
+                    <h3>🔧 Tool Simulator</h3>
+                    <p>Practice using digital calipers and micrometers with realistic interactive simulations.</p>
+                </div>
+
+                <div class="nav-card" onclick="showSection('concepts')">
+                    <h3>🎯 Concept Map</h3>
+                    <p>Explore interconnected concepts and their relationships in measurement systems.</p>
+                </div>
+
+                <div class="nav-card" onclick="showSection('formulas')">
+                    <h3>📊 Formula Bank</h3>
+                    <p>Quick reference for all important formulas with explanations and examples.</p>
+                </div>
+
+                <div class="nav-card" onclick="showSection('progress')">
+                    <h3>📈 Progress Tracker</h3>
+                    <p>Monitor your learning progress and identify areas that need more attention.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcards Section -->
+        <div id="flashcards" class="section">
+            <button class="back-btn" onclick="showMainMenu()">← Back to Menu</button>
+            <h2>🃏 Interactive Flashcards</h2>
+            <p>Click on any card to flip it and reveal the answer!</p>
+            
+            <div id="flashcard-container">
+                <!-- Flashcards will be generated here -->
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button onclick="shuffleFlashcards()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">🔄 Shuffle Cards</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz" class="section">
+            <button class="back-btn" onclick="showMainMenu()">← Back to Menu</button>
+            <h2>🧠 Knowledge Quiz</h2>
+            <div id="quiz-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="quiz-progress" style="width: 0%"></div>
+                </div>
+                <div id="quiz-content">
+                    <!-- Quiz questions will be generated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulator Section -->
+        <div id="simulator" class="section">
+            <button class="back-btn" onclick="showMainMenu()">← Back to Menu</button>
+            <h2>🔧 Measurement Tool Simulator</h2>
+            
+            <div class="measurement-tool">
+                <h3>Digital Caliper Simulator</h3>
+                <div class="caliper-simulation">
+                    <p>Adjust the caliper opening:</p>
+                    <input type="range" min="0" max="150" value="25" class="slider" id="caliper-slider" oninput="updateCaliperReading()">
+                    <div class="reading-display" id="caliper-reading">25.00 mm</div>
+                    <p>Practice reading: The object measures <span id="measurement-value">25.00</span> mm</p>
+                </div>
+            </div>
+
+            <div class="measurement-tool">
+                <h3>Micrometer Simulator</h3>
+                <div class="caliper-simulation">
+                    <p>Adjust the micrometer:</p>
+                    <input type="range" min="0" max="25" step="0.01" value="12.34" class="slider" id="micrometer-slider" oninput="updateMicrometerReading()">
+                    <div class="reading-display" id="micrometer-reading">12.34 mm</div>
+                    <p>Precision: ±0.01 mm</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Concepts Section -->
+        <div id="concepts" class="section">
+            <button class="back-btn" onclick="showMainMenu()">← Back to Menu</button>
+            <h2>🎯 Measurement System Concepts</h2>
+            
+            <div class="concept-map">
+                <div class="concept-node" onclick="showConceptDetails('calibration')">
+                    <h4>Calibration</h4>
+                    <p>Étalonnage</p>
+                </div>
+                <div class="concept-node" onclick="showConceptDetails('precision')">
+                    <h4>Precision</h4>
+                    <p>Précision</p>
+                </div>
+                <div class="concept-node" onclick="showConceptDetails('accuracy')">
+                    <h4>Accuracy</h4>
+                    <p>Justesse</p>
+                </div>
+                <div class="concept-node" onclick="showConceptDetails('repeatability')">
+                    <h4>Repeatability</h4>
+                    <p>Répétabilité</p>
+                </div>
+                <div class="concept-node" onclick="showConceptDetails('reproducibility')">
+                    <h4>Reproducibility</h4>
+                    <p>Reproductibilité</p>
+                </div>
+                <div class="concept-node" onclick="showConceptDetails('sensitivity')">
+                    <h4>Sensitivity</h4>
+                    <p>Sensibilité</p>
+                </div>
+            </div>
+            
+            <div id="concept-details" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px; display: none;">
+                <!-- Concept details will be shown here -->
+            </div>
+        </div>
+
+        <!-- Formulas Section -->
+        <div id="formulas" class="section">
+            <button class="back-btn" onclick="showMainMenu()">← Back to Menu</button>
+            <h2>📊 Formula Reference</h2>
+            
+            <div class="formula-display">
+                <h3>Precision Calculations</h3>
+                <p>Precision relative to true value:</p>
+                <code>Precision (%) = |Measured Value - True Value| / True Value × 100</code>
+            </div>
+            
+            <div class="formula-display">
+                <h3>Hysteresis Error</h3>
+                <p>Hysteresis error calculation:</p>
+                <code>e_h (%) = |y_high - y_low| / y_max × 100</code>
+            </div>
+            
+            <div class="formula-display">
+                <h3>Linearity Error</h3>
+                <p>Linearity error calculation:</p>
+                <code>e_L (%) = |y - y_L| / y_max × 100</code>
+            </div>
+            
+            <div class="formula-display">
+                <h3>Resolution Error</h3>
+                <p>Resolution uncertainty:</p>
+                <code>u_res = ±½ × Resolution</code>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div id="progress" class="section">
+            <button class="back-btn" onclick="showMainMenu()">← Back to Menu</button>
+            <h2>📈 Learning Progress</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: #f0f4ff; padding: 20px; border-radius: 10px;">
+                    <h3>Flashcards Completed</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="flashcard-progress" style="width: 0%"></div>
+                    </div>
+                    <p id="flashcard-count">0 / 20 cards reviewed</p>
+                </div>
+                
+                <div style="background: #f0f8f0; padding: 20px; border-radius: 10px;">
+                    <h3>Quiz Performance</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-performance" style="width: 0%"></div>
+                    </div>
+                    <p id="quiz-score">0% average score</p>
+                </div>
+                
+                <div style="background: #fff8f0; padding: 20px; border-radius: 10px;">
+                    <h3>Concepts Mastered</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="concept-progress" style="width: 0%"></div>
+                    </div>
+                    <p id="concept-count">0 / 6 concepts learned</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for flashcards
+        const flashcards = [
+            {
+                front: "What is Calibration (Étalonnage)?",
+                back: "The operation of measuring known quantities Gi with a measuring instrument to establish the relationship between measured values Mi and known values, creating a curve showing deviations."
+            },
+            {
+                front: "Define Sensitivity (Sensibilité)",
+                back: "The property of a system to return to a predetermined equilibrium position after being subjected to small perturbations, often indicated as a function of time."
+            },
+            {
+                front: "What is Precision (Précision)?",
+                back: "The difference between the measured value and the true value, expressed as a percentage either relative to the true value or full scale."
+            },
+            {
+                front: "Explain Repeatability (Répétabilité)",
+                back: "The closeness of agreement between measurement results of the same quantity under identical conditions: same operator, same location, same method, short time period."
+            },
+            {
+                front: "What is Reproducibility (Reproductibilité)?",
+                back: "The closeness of agreement between measurement results using identical instruments, different operators, different times and locations."
+            },
+            {
+                front: "Define Systematic Error",
+                back: "The mean that would result from an infinite number of measurements of the same measurand under repeatability conditions, minus the true value of the measurand."
+            },
+            {
+                front: "What is Random Error?",
+                back: "The result of a measurement minus the mean of an infinite number of measurements of the same measurand under repeatability conditions."
+            },
+            {
+                front: "Explain Hysteresis Error",
+                back: "When a system gives different output values for the same input value depending on whether the input is increasing or decreasing. Formula: eh% = |yhigh - ylow| / ymax × 100"
+            },
+            {
+                front: "What is Linearity Error?",
+                back: "The deviation from a linear relationship between input and output. Formula: eL% = |y - yL| / ymax × 100, where yL is the linear system value."
+            },
+            {
+                front: "Define Resolution Error",
+                back: "Error due to the finite resolution of an instrument. Calculated as: ures = ±½ × resolution, where resolution is the smallest measurable value."
+            },
+            {
+                front: "What are the components of a measurement system?",
+                back: "1) Sensor (converts physical value to electrical signal), 2) Signal conditioner (modifies amplitude/filters), 3) Output (displays measured value), 4) Optional feedback control system."
+            },
+            {
+                front: "Types of Caliper Verniers",
+                back: "1/10th: 10 divisions = 9mm, precision 0.1mm; 1/20th: 20 divisions = 19mm, precision 0.05mm; 1/50th: 50 divisions = 49mm, precision 0.02mm"
+            },
+            {
+                front: "Micrometer Reading Method",
+                back: "1) Read millimeters on the sleeve, 2) Check for half-millimeter mark, 3) Read hundredths on the thimble scale, 4) Add all values together for final measurement."
+            },
+            {
+                front: "What is Fidélité (Fidelity)?",
+                back: "Characterizes a measuring instrument with low random errors, resulting in measurements grouped around their mean value. Quantified by standard deviation."
+            },
+            {
+                front: "What is Justesse (Accuracy)?",
+                back: "Characterizes a measuring instrument with low systematic errors. The most probable value determined is very close to the true value."
+            },
+            {
+                front: "Direct vs Indirect Measurement",
+                back: "Direct: Reading dimension directly from graduated instrument (ruler, caliper, micrometer). Indirect: Using comparators to measure differences between parts and standards."
+            },
+            {
+                front: "What influences measurement errors?",
+                back: "Temperature (electrical, mechanical effects), pressure, acceleration/vibrations, humidity, magnetic fields, power supply variations, and environmental factors."
+            },
+            {
+                front: "Types of Measurement Errors",
+                back: "1) Calibration errors (relative to primary standards), 2) Data acquisition errors (sensors, instruments, uncontrolled variables), 3) Data analysis errors (smoothing, truncation)."
+            },
+            {
+                front: "Metrological Confirmation Process",
+                back: "1) Appropriate measurement choice, 2) Calibration, 3) Metrological verification, 4) Decision and action. Ensures equipment meets intended use requirements."
+            },
+            {
+                front: "Complete vs Limited Interchangeability",
+                back: "Complete: Parts can be assembled without selection or adjustment. Limited: Parts must be selected from batch for proper assembly, with possible reworking required."
+            }
+        ];
+
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "What is the precision of a 1/20th vernier caliper?",
+                options: ["0.1 mm", "0.05 mm", "0.02 mm", "0.01 mm"],
+                correct: 1,
+                explanation: "A 1/20th vernier has 20 divisions over 19mm, giving precision of 0.05mm."
+            },
+            {
+                question: "Which type of error can be corrected in measurement results?",
+                options: ["Random errors", "Known systematic errors", "Unknown systematic errors", "Gross errors"],
+                correct: 1,
+                explanation: "Known systematic errors can be determined and corrected, unlike unknown systematic errors."
+            },
+            {
+                question: "What does reproducibility test by changing?",
+                options: ["Only the operator", "Only the location", "Only the time", "Operator, location, time, and method"],
+                correct: 3,
+                explanation: "Reproducibility involves changing multiple conditions: operator, location, time, and method."
+            },
+            {
+                question: "How is hysteresis error calculated?",
+                options: ["(yhigh + ylow) / ymax × 100", "|yhigh - ylow| / ymax × 100", "yhigh / ylow × 100", "|yhigh - ylow| / 2"],
+                correct: 1,
+                explanation: "Hysteresis error = |yhigh - ylow| / ymax × 100, measuring the difference between ascending and descending readings."
+            },
+            {
+                question: "What is the resolution error formula?",
+                options: ["±resolution", "±½ × resolution", "±2 × resolution", "±√resolution"],
+                correct: 1,
+                explanation: "Resolution error is typically ±½ × resolution, representing the uncertainty in reading."
+            }
+        ];
+
+        let currentQuizQuestion = 0;
+        let quizScore = 0;
+        let flashcardProgress = 0;
+        let conceptsLearned = 0;
+
+        function showSection(sectionId) {
+            document.getElementById('main-menu').style.display = 'none';
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            if (sectionId === 'flashcards') {
+                generateFlashcards();
+            } else if (sectionId === 'quiz') {
+                generateQuiz();
+            } else if (sectionId === 'progress') {
+                updateProgressDisplay();
+            }
+        }
+
+        function showMainMenu() {
+            document.getElementById('main-menu').style.display = 'block';
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+        }
+
+        function generateFlashcards() {
+            const container = document.getElementById('flashcard-container');
+            container.innerHTML = '';
+            
+            flashcards.forEach((card, index) => {
+                const flashcardDiv = document.createElement('div');
+                flashcardDiv.className = 'flashcard';
+                flashcardDiv.onclick = () => flipCard(index);
+                
+                flashcardDiv.innerHTML = `
+                    <div class="flashcard-front">
+                        <h3>${card.front}</h3>
+                    </div>
+                    <div class="flashcard-back">
+                        <p>${card.back}</p>
+                    </div>
+                `;
+                
+                container.appendChild(flashcardDiv);
+            });
+        }
+
+        function flipCard(index) {
+            const cards = document.querySelectorAll('.flashcard');
+            cards[index].classList.toggle('flipped');
+            
+            if (cards[index].classList.contains('flipped')) {
+                flashcardProgress = Math.min(flashcardProgress + 1, flashcards.length);
+                updateProgress();
+            }
+        }
+
+        function shuffleFlashcards() {
+            // Simple shuffle animation
+            const container = document.getElementById('flashcard-container');
+            container.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                for (let i = flashcards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+                }
+                generateFlashcards();
+                container.style.opacity = '1';
+            }, 300);
+        }
+
+        function generateQuiz() {
+            const container = document.getElementById('quiz-content');
+            currentQuizQuestion = 0;
+            quizScore = 0;
+            displayQuizQuestion();
+        }
+
+        function displayQuizQuestion() {
+            const container = document.getElementById('quiz-content');
+            const question = quizQuestions[currentQuizQuestion];
+            
+            container.innerHTML = `
+                <div class="quiz-question">
+                    <h3>Question ${currentQuizQuestion + 1} of ${quizQuestions.length}</h3>
+                    <p><strong>${question.question}</strong></p>
+                    <div class="quiz-options">
+                        ${question.options.map((option, index) => `
+                            <label class="quiz-option" onclick="selectAnswer(${index})">
+                                <input type="radio" name="answer" value="${index}" style="display: none;">
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="quiz-feedback" style="margin-top: 15px; display: none;"></div>
+                    <button id="next-question" onclick="nextQuestion()" style="display: none; background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 15px;">Next Question</button>
+                </div>
+            `;
+            
+            updateQuizProgress();
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = quizQuestions[currentQuizQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById('quiz-feedback');
+            
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && index !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+                option.style.pointerEvents = 'none';
+            });
+            
+            if (selectedIndex === question.correct) {
+                quizScore++;
+                feedback.innerHTML = `<p style="color: #4caf50;"><strong>Correct!</strong> ${question.explanation}</p>`;
+            } else {
+                feedback.innerHTML = `<p style="color: #f44336;"><strong>Incorrect.</strong> ${question.explanation}</p>`;
+            }
+            
+            feedback.style.display = 'block';
+            document.getElementById('next-question').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuizQuestion++;
+            if (currentQuizQuestion < quizQuestions.length) {
+                displayQuizQuestion();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function showQuizResults() {
+            const container = document.getElementById('quiz-content');
+            const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+            
+            container.innerHTML = `
+                <div class="quiz-question">
+                    <h3>🎉 Quiz Complete!</h3>
+                    <p>Your Score: <strong>${quizScore} / ${quizQuestions.length} (${percentage}%)</strong></p>
+                    <div class="progress-bar" style="margin: 20px 0;">
+                        <div class="progress-fill" style="width: ${percentage}%;"></div>
+                    </div>
+                    <p>${percentage >= 80 ? '🌟 Excellent work!' : percentage >= 60 ? '👍 Good job!' : '📚 Keep studying!'}</p>
+                    <button onclick="generateQuiz()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin: 10px;">Retake Quiz</button>
+                    </div>
             `;
             
             updateQuizProgress();
